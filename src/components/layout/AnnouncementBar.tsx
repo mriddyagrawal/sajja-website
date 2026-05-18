@@ -1,31 +1,47 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useState, useSyncExternalStore } from "react";
 import { X } from "lucide-react";
 
 const STORAGE_KEY = "sajja:dismissed-announcement";
 
+/**
+ * Subscribe to changes in our localStorage key so the bar reacts to other
+ * tabs dismissing the announcement.
+ */
+function subscribe(callback: () => void) {
+  const handler = (e: StorageEvent) => {
+    if (e.key === STORAGE_KEY) callback();
+  };
+  window.addEventListener("storage", handler);
+  return () => window.removeEventListener("storage", handler);
+}
+
+function getSnapshot() {
+  return window.localStorage.getItem(STORAGE_KEY) === "1";
+}
+
+function getServerSnapshot() {
+  // On SSR we don't know — render visible. Client effect will hide if dismissed.
+  return false;
+}
+
 export function AnnouncementBar() {
-  const [dismissed, setDismissed] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const storedDismissed = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const [localDismissed, setLocalDismissed] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-    if (window.localStorage.getItem(STORAGE_KEY) === "1") {
-      setDismissed(true);
-    }
-  }, []);
+  const dismissed = storedDismissed || localDismissed;
 
-  if (mounted && dismissed) return null;
-
-  const handleDismiss = () => {
-    setDismissed(true);
+  const handleDismiss = useCallback(() => {
+    setLocalDismissed(true);
     try {
       window.localStorage.setItem(STORAGE_KEY, "1");
     } catch {
       // localStorage unavailable — fine
     }
-  };
+  }, []);
+
+  if (dismissed) return null;
 
   return (
     <div className="bg-brand-rose text-ink-inverse relative">
