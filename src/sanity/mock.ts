@@ -2,12 +2,16 @@ import type { Category, HomepageHero, Product, SiteSettings } from "./types";
 
 /**
  * Mock data used until the user creates a real Sanity project and populates
- * NEXT_PUBLIC_SANITY_PROJECT_ID in `.env.local`. Images use Unsplash with
- * stable photo IDs that match Sajja's aesthetic (warm, handcrafted, Indian).
+ * NEXT_PUBLIC_SANITY_PROJECT_ID in `.env.local`.
+ *
+ * Images use picsum.photos with stable seeds — generic placeholders that
+ * always work. They are NOT representative of the actual product; they
+ * exist so the layout and design system have realistic images to fill.
+ * Real product photography will live in Sanity once that's wired.
  */
 
-const u = (id: string, opts: { w?: number; h?: number } = {}) =>
-  `https://images.unsplash.com/photo-${id}?w=${opts.w ?? 1200}&h=${opts.h ?? 1200}&fit=crop&auto=format`;
+const u = (seed: string, opts: { w?: number; h?: number } = {}) =>
+  `https://picsum.photos/seed/sajja-${seed}/${opts.w ?? 1200}/${opts.h ?? 1200}`;
 
 // --- Categories ---
 
