@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { Heart, Menu, Search, ShoppingBag, User } from "lucide-react";
+import { Heart, Menu, Search, User } from "lucide-react";
 
 import { Container } from "@/components/layout/Container";
 import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
@@ -14,6 +14,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/Sheet";
+import { CartIcon } from "@/components/cart/CartIcon";
+import { CartDrawer } from "@/components/cart/CartDrawer";
 import { primaryNav } from "@/lib/nav";
 import { cn } from "@/lib/utils";
 
@@ -132,19 +134,7 @@ export function Header() {
               >
                 <Heart className="h-5 w-5" />
               </Link>
-              <Link
-                href="/cart"
-                aria-label="Cart (0 items)"
-                className="text-ink-default hover:bg-surface-shell relative inline-flex h-10 w-10 items-center justify-center rounded-md transition"
-              >
-                <ShoppingBag className="h-5 w-5" />
-                <span
-                  aria-hidden
-                  className="bg-brand-rose text-ink-inverse absolute top-1 right-1 hidden h-4 min-w-[16px] items-center justify-center rounded-full px-1 text-[10px] font-semibold"
-                >
-                  0
-                </span>
-              </Link>
+              <CartIcon />
             </div>
           </div>
 
@@ -201,6 +191,8 @@ export function Header() {
           </Container>
         </div>
       </div>
+
+      <CartDrawer />
     </header>
   );
 }

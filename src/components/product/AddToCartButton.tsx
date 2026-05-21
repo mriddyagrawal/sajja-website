@@ -5,6 +5,7 @@ import { Check, ShoppingBag } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
 import { QuantityStepper } from "@/components/product/QuantityStepper";
+import { useCartStore } from "@/lib/cart/store";
 import type { Product } from "@/sanity/types";
 
 type AddToCartButtonProps = {
@@ -13,10 +14,12 @@ type AddToCartButtonProps = {
 };
 
 /**
- * Phase 1: visually complete add-to-cart UX with no cart wiring.
- * Phase 2 will replace the local `added` state with the Zustand cart store.
+ * Visually complete add-to-cart UX. Persists to the Zustand cart store
+ * and triggers the drawer to open. Phase 3 will layer server-side cart
+ * sync on top of this (no changes needed here).
  */
 export function AddToCartButton({ product, className }: AddToCartButtonProps) {
+  const add = useCartStore((s) => s.add);
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
 
@@ -24,7 +27,15 @@ export function AddToCartButton({ product, className }: AddToCartButtonProps) {
 
   const onAdd = () => {
     if (outOfStock) return;
-    // Phase 2: call cart.add({ productId, quantity })
+    add({
+      productId: product._id,
+      slug: product.slug,
+      title: product.title,
+      image: product.images[0]?.url ?? "",
+      unitPrice: product.price,
+      stockCap: product.stockCount,
+      quantity: qty,
+    });
     setAdded(true);
     window.setTimeout(() => setAdded(false), 1800);
   };
@@ -48,11 +59,7 @@ export function AddToCartButton({ product, className }: AddToCartButtonProps) {
   return (
     <div className={className}>
       <div className="flex items-stretch gap-3">
-        <QuantityStepper
-          value={qty}
-          onChange={setQty}
-          max={product.stockCount ?? 99}
-        />
+        <QuantityStepper value={qty} onChange={setQty} max={product.stockCount ?? 99} />
         <Button size="lg" onClick={onAdd} className="flex-1">
           {added ? (
             <>
