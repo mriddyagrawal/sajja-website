@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { Heart, Menu, Search, User } from "lucide-react";
+import { Menu, Search, User } from "lucide-react";
 
 import { Container } from "@/components/layout/Container";
 import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/Sheet";
 import { CartIcon } from "@/components/cart/CartIcon";
 import { CartDrawer } from "@/components/cart/CartDrawer";
+import { WishlistIcon } from "@/components/cart/WishlistIcon";
 import { primaryNav } from "@/lib/nav";
 import { cn } from "@/lib/utils";
 
@@ -127,13 +128,7 @@ export function Header() {
               >
                 <User className="h-5 w-5" />
               </Link>
-              <Link
-                href="/account/wishlist"
-                aria-label="Wishlist"
-                className="text-ink-default hover:bg-surface-shell hidden h-10 w-10 items-center justify-center rounded-md transition sm:inline-flex"
-              >
-                <Heart className="h-5 w-5" />
-              </Link>
+              <WishlistIcon className="hidden sm:inline-flex" />
               <CartIcon />
             </div>
           </div>

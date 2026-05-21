@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Heart, Leaf, RefreshCw, Truck } from "lucide-react";
+import { Leaf, RefreshCw, Truck } from "lucide-react";
 
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
@@ -9,7 +9,7 @@ import { ImageGallery } from "@/components/product/ImageGallery";
 import { PriceTag } from "@/components/product/PriceTag";
 import { ProductRail } from "@/components/product/ProductRail";
 import { AddToCartButton } from "@/components/product/AddToCartButton";
-import { Button } from "@/components/ui/Button";
+import { WishlistButton } from "@/components/product/WishlistButton";
 import {
   getAllProductSlugs,
   getProductBySlug,
@@ -112,10 +112,7 @@ export default async function ProductPage({ params }: { params: RouteParams }) {
               <AddToCartButton product={product} className="mt-8" />
 
               <div className="border-border-default mt-6 flex items-center gap-2 border-t pt-6">
-                <Button variant="ghost" size="sm" className="flex-1">
-                  <Heart className="h-4 w-4" />
-                  Save for later
-                </Button>
+                <WishlistButton product={product} />
               </div>
 
               {/* Trust strip */}

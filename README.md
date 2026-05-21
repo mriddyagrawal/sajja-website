@@ -2,7 +2,7 @@
 
 E-commerce website for Sajja, a handcrafted Indian décor and gifting brand.
 
-> Phases 0 (foundation) and 1 (catalog) are complete. See [plans/PLAN.md](./plans/PLAN.md) for the full roadmap.
+> Phases 0 (foundation), 1 (catalog), 2 (cart), and 3 (accounts shell + wishlist) are complete. See [plans/PLAN.md](./plans/PLAN.md) for the full roadmap.
 
 ---
 
@@ -38,6 +38,10 @@ That's it. The dev server runs at **http://localhost:3000**.
 | `/shop/decor`, `/shop/pooja-festive`, `/shop/gifting` | Category pages |
 | `/shop/new-arrivals`, `/shop/bestsellers` | Virtual collections (driven by product flags) |
 | `/products/[slug]` | Product detail page with image gallery, JSON-LD, related products |
+| `/cart` | Full cart page — items, summary, promo input (Phase 4), checkout (Phase 4) |
+| `/account` | Account dashboard shell with sidebar nav |
+| `/account/wishlist` | Working wishlist (localStorage; per-device until Clerk wires up server sync) |
+| `/account/orders`, `/account/addresses` | Gated placeholders — unlock once Clerk + Phase 4 land |
 | `/style-guide` | Internal: every brand color, type scale, component variant |
 
 ---
@@ -141,6 +145,31 @@ To develop schemas locally without deploying: `pnpm studio:dev` → http://local
 
 ---
 
+## Accounts & auth (Phase 3)
+
+The `/account` area ships **without** Clerk wired by default — the auth scaffold is in place but no-ops gracefully until you add keys. Until then:
+
+- **`/account/wishlist`** is fully functional via `localStorage`. Click the heart on any card or PDP, then visit `/account/wishlist` to see it. The header heart icon shows a count badge.
+- **`/account` (profile), `/account/orders`, `/account/addresses`** show an "unlock once accounts are wired" placeholder.
+
+### To enable real accounts
+
+1. **Create a Clerk app** at [dashboard.clerk.com](https://dashboard.clerk.com) (free). Enable email + phone OTP.
+
+2. **Add the keys to `.env.local`:**
+   ```
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+   CLERK_SECRET_KEY=sk_test_...
+   ```
+
+3. **Restart `pnpm dev`.** The app detects the keys, wraps in `<ClerkProvider>`, and `/account` starts showing real user info from Clerk's `currentUser()`. The placeholders flip to "Sign in to view" CTAs.
+
+4. **Server-side wishlist + addresses + orders** come in Phase 4 alongside Supabase. Until then, the wishlist stays per-device.
+
+> The auth provider is conditional. If `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` is empty, `<AuthProvider>` is a passthrough and Clerk's bundle isn't even loaded server-side. No errors, no crashes.
+
+---
+
 ## Design tokens
 
 All colors, fonts, radii, and shadows are in [src/app/globals.css](./src/app/globals.css) under `@theme`. Tailwind v4 turns each variable into a utility class automatically — e.g. `--color-brand-rose` becomes `bg-brand-rose`, `text-brand-rose`, `border-brand-rose`.
@@ -180,7 +209,7 @@ Mobile-first. At < 1024px the desktop nav row hides, hamburger appears, hero sta
 
 ## What's next
 
-[plans/phase-2.md](./plans/phase-2.md) — Cart. Add-to-cart on PDP currently flashes a success state without storing anything; Phase 2 wires the Zustand store, cart drawer, and `/cart` page.
+[plans/phase-4.md](./plans/phase-4.md) — Checkout & Orders. Wires Supabase + Prisma for orders, builds the multi-step checkout (address → shipping → payment → review), and lights up the disabled "Checkout" button on `/cart`. Server-backed wishlist / addresses / orders all start landing here once Clerk is also configured.
 
 ---
 

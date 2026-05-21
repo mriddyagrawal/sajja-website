@@ -53,12 +53,7 @@ export function ProductCard({ product, priority, className }: ProductCardProps) 
           {outOfStock && <Badge tone="charcoal">Sold out</Badge>}
         </div>
 
-        {/* Wishlist heart (wired in Phase 3) */}
-        <WishlistHeart
-          productId={product._id}
-          productTitle={product.title}
-          className="absolute top-3 right-3 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
-        />
+        <WishlistHeart product={product} className="absolute top-3 right-3" />
       </div>
 
       <div className="px-1 pt-4">
